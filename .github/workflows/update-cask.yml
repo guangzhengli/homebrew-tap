@@ -1,0 +1,87 @@
+name: Update Cask
+
+on:
+  workflow_dispatch:
+    inputs:
+      cask:
+        description: "Cask token, for example my-app"
+        required: true
+        type: string
+      tag:
+        description: "Release tag, for example v1.0.0"
+        required: true
+        type: string
+      repository:
+        description: "Source repository, for example guangzhengli/my-app"
+        required: true
+        type: string
+      asset_name:
+        description: "Release asset filename. Defaults to <cask>-<version>.zip"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  update-cask:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout tap repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Update cask
+        env:
+          CASK: ${{ inputs.cask }}
+          TAG: ${{ inputs.tag }}
+          REPOSITORY: ${{ inputs.repository }}
+          ASSET_NAME: ${{ inputs.asset_name }}
+        run: |
+          set -euo pipefail
+
+          VERSION="${TAG#v}"
+          if [ -z "${ASSET_NAME}" ]; then
+            ASSET_NAME="${CASK}-${VERSION}.zip"
+          fi
+
+          CASK_FILE="Casks/${CASK}.rb"
+          DOWNLOAD_URL="https://github.com/${REPOSITORY}/releases/download/${TAG}/${ASSET_NAME}"
+
+          test -f "${CASK_FILE}"
+          curl -fL "${DOWNLOAD_URL}" -o "${ASSET_NAME}"
+          SHA256="$(shasum -a 256 "${ASSET_NAME}" | awk '{print $1}')"
+
+          export CASK_FILE VERSION SHA256 DOWNLOAD_URL REPOSITORY
+          ruby <<'RUBY'
+          path = ENV.fetch("CASK_FILE")
+          version = ENV.fetch("VERSION")
+          sha256 = ENV.fetch("SHA256")
+          url = ENV.fetch("DOWNLOAD_URL")
+          repository = ENV.fetch("REPOSITORY")
+
+          content = File.read(path)
+          content = content.sub(/^\s*version\s+".*?"\s*$/, %(  version "#{version}"))
+          content = content.sub(/^\s*sha256\s+.*$/, %(  sha256 "#{sha256}"))
+          content = content.sub(
+            /^\s*url\s+".*?"(?:,\n\s*verified:\s+".*?")?/m,
+            %(  url "#{url}",\n      verified: "github.com/#{repository}/")
+          )
+
+          File.write(path, content)
+          RUBY
+
+      - name: Commit changes
+        env:
+          CASK: ${{ inputs.cask }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          git add "Casks/${CASK}.rb"
+          git diff --cached --quiet && exit 0
+          git commit -m "Update ${CASK} to ${TAG}"
+          git push
