@@ -1,6 +1,6 @@
 cask "kapinote" do
   version "0.4.3"
-  sha256 "5ab06297cfd375c89fec24922738c8e051a2b0373cc1e646a023846908428905"
+  sha256 "3c78332e6fca3a5ce61c5b9bdd2f4ea148704aae99a2b43a007dd251f7199f87"
 
   url "https://github.com/guangzhengli/kapinote-releases/releases/download/v#{version}/Kapinote_0.4.3_aarch64.dmg"
   name "Kapinote"
