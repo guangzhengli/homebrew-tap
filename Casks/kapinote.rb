@@ -1,8 +1,8 @@
 cask "kapinote" do
-  version "0.9.11"
-  sha256 "fb6a22ad693bfa02634fe8a240ed8f0e9775676588590e0eed6385725bf4836f"
+  version "0.9.12"
+  sha256 "e07acdfb917b639fda9cca224508bb7fd88aa070599fd387e9e0611099db8f21"
 
-  url "https://github.com/guangzhengli/kapinote-releases/releases/download/v#{version}/Kapinote_0.9.11_aarch64.dmg"
+  url "https://github.com/guangzhengli/kapinote-releases/releases/download/v#{version}/Kapinote_0.9.12_aarch64.dmg"
   name "Kapinote"
   desc "Desktop meetings app"
   homepage "https://github.com/guangzhengli/kapinote-releases"
