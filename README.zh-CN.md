@@ -9,6 +9,12 @@
 - SSH: `git@github.com:guangzhengli/homebrew-tap.git`
 - HTTPS: `https://github.com/guangzhengli/homebrew-tap`
 
+
+> 这里的 `Casks/kapinote.rb` 是一份镜像。Kapinote 的正式 tap 是
+> [`kapinoteai/tap`](https://github.com/kapinoteai/homebrew-tap)；保留这份副本是为了让
+> 当初从 `guangzhengli/tap` 安装的用户能继续升级。两边都由 Kapinote 的发布脚本写入，
+> 不要手工编辑那个 cask。
+
 参考：这个 tap 的目录结构和维护流程参考了 [`steipete/homebrew-tap`](https://github.com/steipete/homebrew-tap)。
 
 ## 我如何使用这个 Tap
@@ -114,11 +120,3 @@ brew install --cask guangzhengli/tap/your-app
 3. 更新 `Casks/<cask>.rb` 里的 `version`、`sha256` 和 `url`。
 4. 重新执行本地 audit 和安装测试。
 5. 提交并推送 tap 更新。
-
-GitHub Actions 更新：
-
-1. 打开 `Update Cask` workflow。
-2. 手动运行 workflow，填写 cask 名称、release tag、源码仓库和可选的 asset 文件名。
-3. 检查 workflow 自动生成的提交。
-
-这个 workflow 会下载 release asset、计算 SHA256、更新 `Casks/<cask>.rb`，然后把变更提交回这个仓库。

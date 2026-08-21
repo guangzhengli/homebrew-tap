@@ -9,6 +9,12 @@ Repository:
 - SSH: `git@github.com:guangzhengli/homebrew-tap.git`
 - HTTPS: `https://github.com/guangzhengli/homebrew-tap`
 
+
+> `Casks/kapinote.rb` here is a mirror. Kapinote's canonical tap is
+> [`kapinoteai/tap`](https://github.com/kapinoteai/homebrew-tap); this copy exists so
+> anyone who installed from `guangzhengli/tap` keeps upgrading. Both are written by
+> Kapinote's release script — do not edit that cask by hand.
+
 Reference: this tap layout and workflow use [`steipete/homebrew-tap`](https://github.com/steipete/homebrew-tap) as a reference example.
 
 ## How I Use This Tap
@@ -114,11 +120,3 @@ Manual update:
 3. Update `version`, `sha256`, and `url` in `Casks/<cask>.rb`.
 4. Run the local audit and install test again.
 5. Commit and push the tap update.
-
-GitHub Actions update:
-
-1. Open the `Update Cask` workflow.
-2. Run it manually with the cask name, release tag, source repository, and optional asset name.
-3. Review the generated commit.
-
-The workflow downloads the release asset, calculates SHA256, updates `Casks/<cask>.rb`, and commits the change back to this repository.
